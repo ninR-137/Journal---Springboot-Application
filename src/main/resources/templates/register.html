@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Journal</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <main class="auth-page">
+        <div class="auth-shell">
+            <section class="auth-hero">
+                <div>
+                    <span class="brand-badge">Journal</span>
+                    <div class="hero-copy">
+                        <h1>Start your personal writing space today.</h1>
+                        <p>Create an account and build a simple system for notes, reflections, and everyday ideas that matter.</p>
+                    </div>
+                    <ul class="feature-list">
+                        <li>Organize thoughts in one clean workspace</li>
+                        <li>Write freely with automatic saving</li>
+                        <li>Access your notes from a beautiful dashboard</li>
+                    </ul>
+                </div>
+                <div class="hero-footer">
+                    <div class="stat-card"><strong>Quick setup</strong><span>Create an account in seconds</span></div>
+                    <div class="stat-card"><strong>Personal</strong><span>Your own private note space</span></div>
+                    <div class="stat-card"><strong>Modern</strong><span>Designed for a calm workflow</span></div>
+                </div>
+            </section>
+
+            <section class="auth-card">
+                <div class="auth-card-header">
+                    <h2>Create your account</h2>
+                    <p>Join Journal and start writing with a polished, focused note experience.</p>
+                </div>
+
+                <form class="auth-form" th:action="@{/register}" th:object="${registerRequest}" method="post">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" th:field="*{username}" autocomplete="username" required>
+                        <p class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></p>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" th:field="*{password}" autocomplete="new-password" required>
+                        <p class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+                    </div>
+
+                    <button type="submit" class="primary-action">Create account</button>
+                </form>
+
+                <p class="auth-switch">Already have an account? <a th:href="@{/login}">Back to login</a></p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

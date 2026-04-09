@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <script>
+        (function () {
+            try {
+                const stored = window.localStorage.getItem('journalSidebarCollapsed');
+                const shouldCollapse = stored === null
+                    ? window.matchMedia('(max-width: 900px)').matches
+                    : stored === 'true';
+                document.documentElement.dataset.sidebarState = shouldCollapse ? 'collapsed' : 'expanded';
+            } catch (error) {
+                document.documentElement.dataset.sidebarState = window.matchMedia('(max-width: 900px)').matches
+                    ? 'collapsed'
+                    : 'expanded';
+            }
+        })();
+    </script>
+    <link rel="stylesheet" th:href="@{/css/dashboard.css}">
+</head>
+<body>
+    <div id="dashboardShell" class="dashboard-shell">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-top-actions">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="ghost-btn">Logout</button>
+                    </form>
+                </div>
+                <button type="button" class="sidebar-toggle" onclick="toggleSidebar()" aria-label="Toggle notes panel">☰</button>
+            </div>
+
+            
+
+            <div class="sidebar-actions">
+                <a class="new-note-btn" th:href="@{/dashboard(page=${currentPage}, newNote=true)}">+ New note</a>
+                <form class="sidebar-action-form" th:if="${selectedNote != null}" th:action="@{/notes/{id}/delete(id=${selectedNote.id})}" method="post" data-delete-form>
+                    <input type="hidden" name="page" th:value="${currentPage}">
+                    <button type="submit" class="danger-btn">Delete</button>
+                </form>
+            </div>
+
+            <div class="notes-scroll">
+                <div class="empty-sidebar" th:if="${notesPage.content.size() == 0}">
+                    <p>No notes yet.</p>
+                    <span>Create your first note to get started.</span>
+                </div>
+
+                <a th:each="note : ${notesPage.content}"
+                   class="note-link"
+                   th:attr="data-note-id=${note.id}"
+                   th:classappend="${selectedNote != null and note.id == selectedNote.id} ? ' active' : ''"
+                   th:href="@{/dashboard(page=${currentPage}, noteId=${note.id})}">
+                    <div class="note-link-title" th:text="${note.title}">Note title</div>
+                    <div class="note-link-preview" th:text="${#strings.abbreviate(note.content, 70)}">Preview...</div>
+                </a>
+            </div>
+
+            <div class="pagination-controls" th:if="${totalPages > 1}">
+                <a th:href="@{/dashboard(page=${currentPage - 1})}" th:classappend="${!hasPrevious} ? ' disabled' : ''">Previous</a>
+                <span th:text="|${currentPage + 1} / ${totalPages}|">1 / 1</span>
+                <a th:href="@{/dashboard(page=${currentPage + 1})}" th:classappend="${!hasNext} ? ' disabled' : ''">Next</a>
+            </div>
+        </aside>
+
+        <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar(true)"></div>
+
+        <main class="main-panel">
+            <div class="main-content">
+            <section class="note-workspace">
+                <form id="noteForm"
+                      class="edit-view"
+                      th:action="@{/notes/save}"
+                      th:attr="data-autosave-url=@{/notes/autosave}"
+                      method="post">
+                    <div class="note-toolbar">
+                        <div class="note-title-wrap">
+                            <input id="noteTitleInput"
+                                   class="note-title-input"
+                                   type="text"
+                                   name="title"
+                                   placeholder="Untitled note"
+                                   th:value="${selectedNote != null ? selectedNote.title : ''}"
+                                   th:attr="maxlength=${maxTitleLength}"
+                                   required>
+                        </div>
+                        <span id="autosaveStatus" class="autosave-status autosave-status-floating" aria-live="polite">Autosave ready</span>
+                    </div>
+
+                    <input type="hidden" name="noteId" th:value="${selectedNote != null ? selectedNote.id : null}">
+                    <input type="hidden" name="page" th:value="${currentPage}">
+
+                    <label>
+                        Content
+                        <textarea name="content"
+                                  rows="16"
+                                  placeholder="Write your thoughts here..."
+                                  th:attr="maxlength=${maxContentLength},data-maxlength=${maxContentLength}"
+                                  th:text="${selectedNote != null ? selectedNote.content : ''}"></textarea>
+                    </label>
+
+                    <div class="form-actions">
+                        <span id="noteLimitInfo" class="note-limit-info" th:text="|0 / ${maxContentLength} characters|">0 / 20000 characters</span>
+                    </div>
+                </form>
+            </section>
+            </div>
+        </main>
+    </div>
+
+    <div id="deleteModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="deleteModalTitle">
+        <div class="modal-card">
+            <p class="modal-eyebrow">Confirm delete</p>
+            <h3 id="deleteModalTitle">Delete this note?</h3>
+            <p class="modal-text">This action cannot be undone.</p>
+            <div class="modal-actions">
+                <button type="button" class="ghost-btn" onclick="closeDeleteModal()">Cancel</button>
+                <button type="button" id="confirmDeleteBtn" class="danger-btn">Delete note</button>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/dashboard.js}" defer></script>
+</body>
+</html>

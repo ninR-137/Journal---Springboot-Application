@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Journal</title>
+    <link rel="stylesheet" th:href="@{/css/auth.css}">
+</head>
+<body>
+    <main class="auth-page">
+        <div class="auth-shell">
+            <section class="auth-hero">
+                <div>
+                    <span class="brand-badge">Journal</span>
+                    <div class="hero-copy">
+                        <h1>Write clearly. Capture ideas instantly.</h1>
+                        <p>Keep your thoughts, plans, and daily reflections in one calm, focused space designed for real writing.</p>
+                    </div>
+                    <ul class="feature-list">
+                        <li>Clean writing experience with autosave</li>
+                        <li>Fast note navigation across devices</li>
+                        <li>Private space for drafts and ideas</li>
+                    </ul>
+                </div>
+                <div class="hero-footer">
+                    <div class="stat-card"><strong>Autosave</strong><span>Your notes stay current</span></div>
+                    <div class="stat-card"><strong>Focused</strong><span>Minimal, distraction-free writing</span></div>
+                    <div class="stat-card"><strong>Secure</strong><span>Sign in to your personal journal</span></div>
+                </div>
+            </section>
+
+            <section class="auth-card">
+                <div class="auth-card-header">
+                    <h2>Welcome back</h2>
+                    <p>Sign in to continue writing and managing your notes.</p>
+                </div>
+
+                <div class="alert-stack">
+                    <div class="alert alert-success" th:if="${successMessage}" th:text="${successMessage}"></div>
+                    <div class="alert alert-error" th:if="${param.error}">Invalid username or password.</div>
+                    <div class="alert alert-success" th:if="${param.logout}">You have been logged out.</div>
+                </div>
+
+                <form class="auth-form" th:action="@{/login}" method="post">
+                    <div class="form-group">
+                        <label for="username">Username</label>
+                        <input id="username" name="username" type="text" autocomplete="username" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input id="password" name="password" type="password" autocomplete="current-password" required>
+                    </div>
+                    <button type="submit" class="primary-action">Sign in</button>
+                </form>
+
+                <p class="auth-switch">New here? <a th:href="@{/register}">Create an account</a></p>
+            </section>
+        </div>
+    </main>
+</body>
+</html>

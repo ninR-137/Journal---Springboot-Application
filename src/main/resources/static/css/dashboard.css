@@ -1,0 +1,663 @@
+:root {
+    --bg: #f3f4f6;
+    --surface: #ffffff;
+    --surface-soft: #f8fafc;
+    --sidebar: #111827;
+    --sidebar-soft: #1f2937;
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --danger: #dc2626;
+    --shadow: 0 20px 40px rgba(15, 23, 42, 0.08);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+a {
+    text-decoration: none;
+}
+
+button,
+input,
+textarea {
+    font: inherit;
+}
+
+.dashboard-shell {
+    min-height: 100vh;
+}
+
+.sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    width: 320px;
+    height: 100vh;
+    background: var(--sidebar);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    gap: 1rem;
+    transition: none;
+    overflow: hidden;
+    z-index: 1000;
+    box-shadow: 12px 0 30px rgba(15, 23, 42, 0.18);
+}
+
+.dashboard-shell.sidebar-ready .sidebar {
+    transition: width 0.25s ease, transform 0.25s ease;
+}
+
+.sidebar.collapsed,
+html[data-sidebar-state="collapsed"] .sidebar {
+    width: 76px;
+    padding-inline: 0.5rem;
+    align-items: center;
+}
+
+.sidebar.collapsed .sidebar-header,
+html[data-sidebar-state="collapsed"] .sidebar .sidebar-header {
+    justify-content: center;
+}
+
+.sidebar.collapsed .brand,
+.sidebar.collapsed .sidebar-top-actions,
+.sidebar.collapsed .sidebar-actions,
+.sidebar.collapsed .notes-scroll,
+.sidebar.collapsed .pagination-controls,
+html[data-sidebar-state="collapsed"] .sidebar .brand,
+html[data-sidebar-state="collapsed"] .sidebar .sidebar-top-actions,
+html[data-sidebar-state="collapsed"] .sidebar .sidebar-actions,
+html[data-sidebar-state="collapsed"] .sidebar .notes-scroll,
+html[data-sidebar-state="collapsed"] .sidebar .pagination-controls {
+    display: none;
+}
+
+.sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    min-width: 0;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    display: grid;
+    place-items: center;
+    background: linear-gradient(135deg, #60a5fa, #2563eb);
+    font-weight: 700;
+}
+
+.brand-copy h1,
+.brand-copy p {
+    margin: 0;
+}
+
+.brand-copy h1 {
+    font-size: 1.1rem;
+}
+
+.brand-copy p {
+    color: #cbd5e1;
+    font-size: 0.85rem;
+}
+
+.sidebar-toggle {
+    border: none;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    padding: 0.6rem 0.75rem;
+    cursor: pointer;
+    min-width: 44px;
+}
+
+.new-note-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #fff;
+    color: var(--sidebar);
+    padding: 0.65rem 0.85rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.92rem;
+}
+
+.sidebar-top-actions {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.sidebar-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+}
+
+.sidebar-actions-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+}
+
+.sidebar-action-form {
+    margin: 0;
+}
+
+.sidebar-actions .secondary-btn,
+.sidebar-actions .danger-btn,
+.sidebar-actions .new-note-btn,
+.sidebar-top-actions .ghost-btn {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-size: 0.88rem;
+    border-radius: 10px;
+}
+
+.sidebar-actions .secondary-btn {
+    background: rgba(255, 255, 255, 0.12);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-top-actions .ghost-btn {
+    background: rgba(255, 255, 255, 0.08);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.sidebar-actions .danger-btn {
+    background: rgba(220, 38, 38, 0.18);
+    color: #fecaca;
+}
+
+.notes-scroll {
+    flex: 1;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    overflow-y: auto;
+    margin-top: 0.6rem;
+    padding: 0.35rem 0.6rem 0 0;
+}
+
+.note-link {
+    display: block;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid transparent;
+    border-radius: 14px;
+    padding: 0.85rem;
+    color: #fff;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+    transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.note-link:hover,
+.note-link.active {
+    transform: translateY(-1px);
+    border-color: rgba(96, 165, 250, 0.85);
+    background: rgba(37, 99, 235, 0.18);
+}
+
+.note-link-title {
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.note-link-preview {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    word-break: break-word;
+}
+
+.empty-sidebar {
+    background: rgba(255, 255, 255, 0.06);
+    border-radius: 14px;
+    padding: 1rem;
+    color: #cbd5e1;
+}
+
+.empty-sidebar p {
+    margin: 0 0 0.35rem;
+    color: #fff;
+    font-weight: 600;
+}
+
+.pagination-controls {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: #cbd5e1;
+}
+
+.pagination-controls a {
+    color: #fff;
+    padding: 0.35rem 0.55rem;
+    border-radius: 8px;
+}
+
+.pagination-controls a.disabled {
+    pointer-events: none;
+    opacity: 0.4;
+}
+
+.sidebar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.35);
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+    z-index: 900;
+}
+
+.sidebar-overlay.ready {
+    transition: opacity 0.2s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.main-panel {
+    flex: 1;
+    width: calc(100% - 320px);
+    margin-left: 320px;
+    padding: clamp(1rem, 2.5vw, 2rem);
+    transition: none;
+}
+
+.dashboard-shell.sidebar-ready .main-panel {
+    transition: margin-left 0.25s ease, width 0.25s ease;
+}
+
+.dashboard-shell.sidebar-collapsed .main-panel,
+html[data-sidebar-state="collapsed"] .main-panel {
+    width: calc(100% - 76px);
+    margin-left: 76px;
+}
+
+.main-content {
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+}
+
+.topbar h2,
+.note-toolbar h3 {
+    margin: 0;
+}
+
+.note-title-wrap {
+    flex: 1;
+    min-width: 0;
+}
+
+.note-title-input {
+    width: 100%;
+    border: none;
+    background: transparent;
+    padding: 0;
+    margin: 0;
+    font-size: clamp(1.35rem, 2vw, 1.85rem);
+    font-weight: 700;
+    color: var(--text);
+}
+
+.note-title-input::placeholder {
+    color: #9ca3af;
+}
+
+.note-title-input:focus {
+    outline: none;
+}
+
+.eyebrow {
+    margin: 0 0 0.3rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.note-workspace {
+    background: transparent;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+}
+
+.note-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    position: sticky;
+    top: 0.5rem;
+    z-index: 20;
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(229, 231, 235, 0.9);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+    padding: 0.75rem 0.9rem;
+}
+
+.toolbar-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+}
+
+.primary-btn,
+.secondary-btn,
+.ghost-btn,
+.danger-btn {
+    border: none;
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.primary-btn {
+    background: var(--primary);
+    color: #fff;
+}
+
+.primary-btn:hover {
+    background: var(--primary-dark);
+}
+
+.secondary-btn,
+.ghost-btn {
+    background: var(--surface-soft);
+    color: var(--text);
+    border: 1px solid var(--border);
+}
+
+.danger-btn {
+    background: #fee2e2;
+    color: var(--danger);
+}
+
+.link-btn {
+    text-decoration: none;
+}
+
+.read-view,
+.edit-view {
+    margin-top: 1rem;
+}
+
+.note-content {
+    padding: 0.25rem 0;
+}
+
+.note-content h1,
+.empty-state h3 {
+    margin-top: 0;
+}
+
+.note-content pre {
+    white-space: pre-wrap;
+    word-break: break-word;
+    line-height: 1.7;
+    margin: 0;
+    color: #374151;
+    font-family: inherit;
+}
+
+.empty-state {
+    background: var(--surface-soft);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 1.25rem;
+}
+
+.edit-view {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.edit-view label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    font-weight: 600;
+}
+
+.edit-view input:focus,
+.edit-view textarea:focus {
+    outline: none;
+}
+
+.edit-view input,
+.edit-view textarea {
+    width: 100%;
+    border: none;
+    border-radius: 0;
+    padding: 0.25rem 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.edit-view textarea {
+    resize: vertical;
+    min-height: 320px;
+    line-height: 1.7;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+}
+
+.note-limit-info {
+    color: var(--muted);
+    font-size: 0.88rem;
+}
+
+.note-limit-info.warning {
+    color: #d97706;
+}
+
+.note-limit-info.limit-reached {
+    color: var(--danger);
+}
+
+.autosave-status {
+    color: var(--muted);
+    font-size: 0.92rem;
+}
+
+.autosave-status-floating {
+    position: static;
+    flex-shrink: 0;
+    align-self: center;
+    background: rgba(248, 250, 252, 0.96);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 0.35rem 0.7rem;
+    box-shadow: 0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.autosave-status.saving {
+    color: var(--primary);
+}
+
+.autosave-status.saved {
+    color: #059669;
+}
+
+.autosave-status.error {
+    color: var(--danger);
+}
+
+.hidden {
+    display: none;
+}
+
+body.modal-open {
+    overflow: hidden;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    background: rgba(15, 23, 42, 0.58);
+    z-index: 1200;
+}
+
+.modal-backdrop.hidden {
+    display: none;
+}
+
+.modal-card {
+    width: min(100%, 420px);
+    background: var(--surface);
+    border-radius: 18px;
+    box-shadow: 0 24px 60px rgba(15, 23, 42, 0.24);
+    padding: 1.2rem;
+}
+
+.modal-eyebrow {
+    margin: 0 0 0.35rem;
+    color: var(--danger);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+}
+
+.modal-card h3 {
+    margin: 0 0 0.5rem;
+    color: var(--text);
+}
+
+.modal-text {
+    margin: 0 0 1rem;
+    color: #4b5563;
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+@media (max-width: 900px) {
+    .note-toolbar {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .autosave-status-floating {
+        align-self: flex-start;
+    }
+
+    .sidebar {
+        width: min(86vw, 320px);
+    }
+
+    .sidebar.collapsed {
+        width: 76px;
+    }
+
+    .main-panel,
+    .dashboard-shell.sidebar-collapsed .main-panel {
+        width: calc(100% - 76px);
+        margin-left: 76px;
+        padding: 1rem 0.85rem 1.25rem;
+    }
+
+    .topbar,
+    .note-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .toolbar-actions,
+    .form-actions {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+
+    .note-workspace {
+        border-radius: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .main-panel,
+    .dashboard-shell.sidebar-collapsed .main-panel {
+        padding: 0.75rem;
+    }
+
+    .topbar h2 {
+        font-size: 1.25rem;
+    }
+
+    .note-card,
+    .empty-state,
+    .note-workspace {
+        border-radius: 14px;
+        padding: 1rem;
+    }
+
+    .edit-view textarea {
+        min-height: 240px;
+    }
+}
